@@ -2,76 +2,143 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Star India Agencies | Mahindra Dealer Pro</title>
     <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #050505; --key: #1a1a2e; --acc: #ff1f1f; --txt: #ffffff; --rgb-speed: 4s; --rgb-grad: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111); }
-        body { background-color: #000; font-family: 'Rajdhani', sans-serif; color: var(--txt); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        :root { 
+            --bg: #050505; --key: #1a1a2e; --acc: #ff1f1f; --txt: #ffffff; 
+            --rgb-speed: 4s; 
+            --rgb-grad: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111);
+            --angle: 0deg;
+        }
         
-        /* Persistent RGB Outer Frame */
-        .rgb-frame { padding: 4px; border-radius: 2.6rem; background: #111; transition: 0.5s; }
-        .rgb-active { background: var(--rgb-grad); animation: rotate var(--rgb-speed) linear infinite; }
+        body { 
+            background-color: #000; 
+            font-family: 'Rajdhani', sans-serif; 
+            color: var(--txt); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            height: 100dvh; /* Better mobile support */
+            margin: 0; 
+            overflow: hidden; 
+        }
+
+        /* Startup Glow Fix & Responsive Scaling */
+        .calculator-container {
+            transform: scale(0.9); /* Slight scale to ensure bottom isn't cut off */
+            max-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-height: 700px) { .calculator-container { transform: scale(0.75); } }
+        @media (max-height: 600px) { .calculator-container { transform: scale(0.65); } }
+
+        .rgb-frame { 
+            padding: 4px; 
+            border-radius: 2.6rem; 
+            background: #111; 
+            transition: 0.5s;
+            /* Force glow on startup */
+            background: var(--rgb-grad);
+            animation: rotate var(--rgb-speed) linear infinite;
+        }
+
+        /* State when turned OFF manually */
+        .rgb-off { background: #222 !important; animation: none !important; }
+
         @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
         @keyframes rotate { to { --angle: 360deg; } }
 
-        .calculator-body { width: 360px; height: 780px; background: var(--bg); border-radius: 2.5rem; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid #333; position: relative; }
+        .calculator-body { 
+            width: 350px; 
+            height: 720px; /* Reduced height for better mobile fit */
+            background: var(--bg); 
+            border-radius: 2.5rem; 
+            padding: 1.2rem; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #333; 
+            position: relative; 
+        }
         
-        /* Display Fix */
-        .display-container { background: #000; height: 110px; border-radius: 1.5rem; margin-bottom: 1rem; display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; text-align: right; border: 1px solid #444; overflow: hidden; box-shadow: inset 0 0 10px rgba(255,0,0,0.2); }
-        #res { font-size: 2rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; width: 100%; }
-        #res::-webkit-scrollbar { display: none; }
+        .display-container { 
+            background: #000; 
+            height: 100px; 
+            border-radius: 1.5rem; 
+            margin-bottom: 1rem; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-end; 
+            padding: 1rem; 
+            text-align: right; 
+            border: 1px solid #444; 
+            overflow: hidden; 
+            box-shadow: inset 0 0 10px rgba(255,0,0,0.2); 
+        }
 
-        /* RGB Key Effect 1-9 */
+        #res { font-size: 2rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; }
+        
+        .key { 
+            background: var(--key); 
+            color: var(--acc); 
+            border-radius: 1rem; 
+            height: 68px; /* Slightly shorter keys for responsiveness */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.1s; 
+            border-bottom: 3px solid rgba(0,0,0,0.5); 
+        }
+        .key:active { transform: scale(0.95); border-bottom: 0px; }
+        
         .key-rgb { animation: key-glow 3s infinite alternate; }
         @keyframes key-glow { 
             0% { box-shadow: inset 0 0 5px rgba(255,0,0,0.4); } 
-            50% { box-shadow: inset 0 0 12px rgba(0,255,255,0.3); }
-            100% { box-shadow: inset 0 0 5px rgba(255,0,255,0.4); } 
+            100% { box-shadow: inset 0 0 5px rgba(0,255,255,0.4); } 
         }
 
-        /* Key Sizing */
-        .key { background: var(--key); color: var(--acc); border-radius: 1rem; height: 74px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.1s; border-bottom: 3px solid rgba(0,0,0,0.5); }
-        .key:active { transform: scale(0.95); border-bottom: 0px; }
-        .key-digit { font-size: 1.6rem; font-weight: 800; font-family: 'Orbitron'; z-index: 2; }
-        .car-icon { width: 48px; height: 28px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); z-index: 1; }
+        .car-icon { width: 44px; height: 26px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
 
-        /* Modals */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal.active { display: flex; }
-        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,1); }
-        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; text-align: center; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; text-decoration: none; width: 100%; }
+        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; }
         
-        /* Social Footer Icons */
-        .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; transition: 0.3s; }
-        .social-link:hover { border-color: #ff1f1f; transform: translateY(-3px); }
+        .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; }
+        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div id="mainFrame" class="rgb-frame rgb-active">
-        <div class="calculator-body">
-            <div class="mb-4">
-                <span class="text-[11px] font-bold text-red-500 block mb-2 tracking-widest">STAR INDIA AGENCIES PVT. LTD.</span>
-                <div class="flex gap-2">
-                    <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-1.5 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
-                    <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-1.5 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
+    <div class="calculator-container">
+        <div id="mainFrame" class="rgb-frame">
+            <div class="calculator-body">
+                <div class="mb-4">
+                    <span class="text-[10px] font-bold text-red-500 block mb-2 tracking-widest">STAR INDIA AGENCIES PVT. LTD.</span>
+                    <div class="flex gap-2">
+                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
+                        <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="display-container">
-                <div id="res">0</div>
-            </div>
+                <div class="display-container">
+                    <div id="res">0</div>
+                </div>
 
-            <div id="key-grid" class="grid grid-cols-4 gap-2"></div>
+                <div id="key-grid" class="grid grid-cols-4 gap-2"></div>
+            </div>
         </div>
     </div>
 
     <div id="themeModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a]">
             <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">SYSTEM CFG</h2>
-            
             <div class="space-y-3 text-left">
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase">Visual Theme</label>
@@ -82,7 +149,6 @@
                         <option value="pink">Cyber Pink</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase">RGB Mode</label>
                     <select id="rgbModeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
@@ -92,7 +158,6 @@
                         <option value="gold">Luxury Gold</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase">Mechanical Switches</label>
                     <select id="audioSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
@@ -102,10 +167,8 @@
                         <option value="retro">Retro Typewriter</option>
                     </select>
                 </div>
-
                 <button onclick="toggleRGB()" id="rgbBtn" class="w-full bg-green-900/30 text-green-400 p-2 rounded border border-green-700 text-xs font-bold uppercase">Frame Power: ON</button>
             </div>
-
             <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">SAVE & APPLY</button>
         </div>
     </div>
@@ -113,29 +176,20 @@
     <div id="contactModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a] border-red-600">
             <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT DEALERSHIP</h2>
-            <div class="space-y-2 mb-6">
+            <div class="space-y-2 mb-4">
                 <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
                 <a href="tel:7067321621" class="contact-btn">🔑 BOOK TEST DRIVE</a>
                 <a href="tel:9800055555" class="contact-btn !bg-indigo-800">🛠️ BOOK A SERVICE</a>
                 <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP US</a>
             </div>
-            
             <div class="border-t border-gray-800 pt-4">
-                <p class="text-[10px] text-gray-500 uppercase mb-3 font-bold">Follow & Explore</p>
                 <div class="flex justify-center gap-4">
-                    <a href="https://facebook.com/yourpage" target="_blank" class="social-link" title="Facebook">
-                        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert">
-                    </a>
-                    <a href="https://instagram.com/yourpage" target="_blank" class="social-link" title="Instagram">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert">
-                    </a>
-                    <a href="https://yourwebsite.com" target="_blank" class="social-link" title="Website">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert">
-                    </a>
+                    <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert"></a>
+                    <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert"></a>
+                    <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert"></a>
                 </div>
             </div>
-            
-            <button onclick="toggleModal('contactModal')" class="mt-6 text-gray-500 text-[10px] uppercase">Close Terminal</button>
+            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
         </div>
     </div>
 
@@ -153,7 +207,7 @@
             const theme = document.getElementById('themeSelect').value;
             const audio = document.getElementById('audioSelect').value;
             const rgbMode = document.getElementById('rgbModeSelect').value;
-            const rgbOn = document.getElementById('mainFrame').classList.contains('rgb-active');
+            const rgbOn = !document.getElementById('mainFrame').classList.contains('rgb-off');
             
             localStorage.setItem('mahindraCfg', JSON.stringify({ theme, audio, rgbMode, rgbOn }));
             applyTheme(theme);
@@ -176,16 +230,19 @@
 
         function applyRGBMode(m) {
             const root = document.documentElement;
-            if (m === 'classic') root.style.setProperty('--rgb-grad', 'linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111)');
-            else if (m === 'neon') root.style.setProperty('--rgb-grad', 'linear-gradient(var(--angle), #00f2ff, #000, #00f2ff, #111)');
-            else if (m === 'rainbow') root.style.setProperty('--rgb-grad', 'linear-gradient(var(--angle), #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff)');
-            else if (m === 'gold') root.style.setProperty('--rgb-grad', 'linear-gradient(var(--angle), #ffd700, #222, #ffd700, #111)');
+            const grads = {
+                classic: 'linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111)',
+                neon: 'linear-gradient(var(--angle), #00f2ff, #000, #00f2ff, #111)',
+                rainbow: 'linear-gradient(var(--angle), #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)',
+                gold: 'linear-gradient(var(--angle), #ffd700, #222, #ffd700, #111)'
+            };
+            root.style.setProperty('--rgb-grad', grads[m]);
         }
 
         function toggleRGB() {
             const frame = document.getElementById('mainFrame');
-            frame.classList.toggle('rgb-active');
-            document.getElementById('rgbBtn').innerText = frame.classList.contains('rgb-active') ? "Frame Power: ON" : "Frame Power: OFF";
+            frame.classList.toggle('rgb-off');
+            document.getElementById('rgbBtn').innerText = frame.classList.contains('rgb-off') ? "Frame Power: OFF" : "Frame Power: ON";
             updateSettings();
         }
 
@@ -195,7 +252,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = (type === 'blue') ? 'square' : (type === 'brown') ? 'triangle' : (type === 'red') ? 'sine' : 'sawtooth';
-            osc.frequency.setValueAtTime((type === 'blue') ? 180 : 140, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
             osc.connect(gain); gain.connect(audioCtx.destination);
@@ -216,9 +273,7 @@
                     else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
                     else if (k === '=') { try { expr = eval(expr.replace('×', '*').replace('÷', '/')).toString(); } catch { expr = "Error"; } }
                     else expr = expr === "0" ? k : expr + k;
-                    const res = document.getElementById('res');
-                    res.innerText = expr;
-                    res.scrollLeft = res.scrollWidth;
+                    document.getElementById('res').innerText = expr;
                 };
                 grid.appendChild(btn);
             });
@@ -229,7 +284,9 @@
             document.getElementById('themeSelect').value = cfg.theme;
             document.getElementById('audioSelect').value = cfg.audio;
             document.getElementById('rgbModeSelect').value = cfg.rgbMode;
-            if (!cfg.rgbOn) document.getElementById('mainFrame').classList.remove('rgb-active');
+            
+            if (!cfg.rgbOn) document.getElementById('mainFrame').classList.add('rgb-off');
+            
             applyTheme(cfg.theme);
             applyRGBMode(cfg.rgbMode);
             renderKeys();
