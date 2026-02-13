@@ -21,24 +21,30 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            height: 100dvh; 
+            min-height: 100dvh; 
             margin: 0; 
-            overflow: hidden; 
+            /* Allow scrolling if 175% scale exceeds small screens */
+            overflow-y: auto; 
+            overflow-x: hidden;
         }
 
-        /* Increased Scale and Responsive Logic */
+        /* 75% Total Size Increase Logic */
         .calculator-container {
-            transform: scale(1.1); /* Increased size by 20% from previous 0.9 base */
+            transform: scale(1.75); /* 75% larger than original base */
             display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.3s ease;
+            margin: 150px 0; /* Add margin so scaled content isn't clipped by page edges */
         }
 
-        /* Prevents overflow on smaller mobile screens */
-        @media (max-height: 850px) { .calculator-container { transform: scale(0.95); } }
-        @media (max-height: 750px) { .calculator-container { transform: scale(0.85); } }
-        @media (max-height: 650px) { .calculator-container { transform: scale(0.75); } }
+        /* Responsive Safety: If screen is too small for 1.75, scale down slightly */
+        @media (max-width: 600px) {
+            .calculator-container { transform: scale(1.4); margin: 80px 0; }
+        }
+        @media (max-width: 400px) {
+            .calculator-container { transform: scale(1.1); margin: 40px 0; }
+        }
 
         .rgb-frame { 
             padding: 4px; 
@@ -105,12 +111,11 @@
 
         .car-icon { width: 44px; height: 26px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .modal.active { display: flex; }
-        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; }
+        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; transform: scale(0.8); }
         
         .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; transition: 0.3s; }
-        .social-link:hover { border-color: #ff1f1f; transform: translateY(-3px); }
         .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
     </style>
 </head>
@@ -184,20 +189,19 @@
             </div>
             
             <div class="border-t border-gray-800 pt-4">
-                <p class="text-[9px] text-gray-500 uppercase mb-3 font-bold">Follow Our Channels</p>
                 <div class="flex justify-center gap-4">
-                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link" title="Facebook">
+                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link">
                         <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert">
                     </a>
-                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link" title="Instagram">
+                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link">
                         <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert">
                     </a>
-                    <a href="https://www.starkgp.com" target="_blank" class="social-link" title="Website">
+                    <a href="https://www.starkgp.com" target="_blank" class="social-link">
                         <img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert">
                     </a>
                 </div>
             </div>
-            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close Terminal</button>
+            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
         </div>
     </div>
 
@@ -216,7 +220,6 @@
             const audio = document.getElementById('audioSelect').value;
             const rgbMode = document.getElementById('rgbModeSelect').value;
             const rgbOn = !document.getElementById('mainFrame').classList.contains('rgb-off');
-            
             localStorage.setItem('mahindraCfg', JSON.stringify({ theme, audio, rgbMode, rgbOn }));
             applyTheme(theme);
             applyRGBMode(rgbMode);
@@ -292,9 +295,7 @@
             document.getElementById('themeSelect').value = cfg.theme;
             document.getElementById('audioSelect').value = cfg.audio;
             document.getElementById('rgbModeSelect').value = cfg.rgbMode;
-            
             if (!cfg.rgbOn) document.getElementById('mainFrame').classList.add('rgb-off');
-            
             applyTheme(cfg.theme);
             applyRGBMode(cfg.rgbMode);
             renderKeys();
