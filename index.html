@@ -1,250 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star India Agencies - Mechanical Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Star India Agencies | Mahindra Dealer Pro</title>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-red: #ff0000;
-            --dark-bg: #0a0b0d;
-            --panel-bg: #161b22;
-            --btn-bg: #21262d;
+        :root { 
+            --bg: #050505; --key: #1a1a2e; --acc: #ff1f1f; --txt: #ffffff; 
+            --rgb-speed: 4s; 
+            --rgb-grad: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111);
+            --angle: 0deg;
+        }
+        
+        body { 
+            background-color: #000; 
+            font-family: 'Rajdhani', sans-serif; 
+            color: var(--txt); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100dvh; 
+            margin: 0; 
+            /* Allow scrolling if 175% scale exceeds small screens */
+            overflow-y: auto; 
+            overflow-x: hidden;
         }
 
-        body {
-            background-color: var(--dark-bg);
+        /* 75% Total Size Increase Logic */
+        .calculator-container {
+            transform: scale(1.75); /* 75% larger than original base */
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        /* Responsive Container */
-        .calc-wrapper {
-            width: 95%;
-            max-width: 400px; /* Perfect "Fit to eye" size */
-            padding: 20px;
-            background: var(--panel-bg);
-            border-radius: 40px;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            border: 2px solid transparent;
-            /* Default RGB Border Effect */
-            animation: borderRotate 4s linear infinite;
-        }
-
-        @keyframes borderRotate {
-            0% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
-            33% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
-            66% { border-color: #0000ff; box-shadow: 0 0 15px #0000ff; }
-            100% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 1.2rem;
-            color: var(--neon-red);
-            margin: 0;
-            letter-spacing: 2px;
-        }
-
-        /* Display Area */
-        #display {
-            width: 100%;
-            height: 80px;
-            background: black;
-            border-radius: 15px;
-            border: 1px solid #333;
-            color: white;
-            font-size: 2rem;
-            text-align: right;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        /* Grid Layout */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        button {
-            aspect-ratio: 1/1;
-            border-radius: 12px;
-            border: none;
-            background: var(--btn-bg);
-            color: var(--neon-red);
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
+            transition: transform 0.3s ease;
+            margin: 150px 0; /* Add margin so scaled content isn't clipped by page edges */
         }
 
-        /* Mechanical Click Animation */
-        button:active {
-            transform: translateY(4px);
-            background: #30363d;
+        /* Responsive Safety: If screen is too small for 1.75, scale down slightly */
+        @media (max-width: 600px) {
+            .calculator-container { transform: scale(1.4); margin: 80px 0; }
+        }
+        @media (max-width: 400px) {
+            .calculator-container { transform: scale(1.1); margin: 40px 0; }
         }
 
-        .btn-wide {
-            grid-column: span 2;
-            aspect-ratio: auto;
-            height: 60px;
+        .rgb-frame { 
+            padding: 4px; 
+            border-radius: 2.6rem; 
+            background: #111; 
+            transition: 0.5s;
+            background: var(--rgb-grad);
+            animation: rotate var(--rgb-speed) linear infinite;
         }
 
-        /* Links Section */
-        .links-container {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .rgb-off { background: #222 !important; animation: none !important; }
+
+        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        @keyframes rotate { to { --angle: 360deg; } }
+
+        .calculator-body { 
+            width: 350px; 
+            height: 720px; 
+            background: var(--bg); 
+            border-radius: 2.5rem; 
+            padding: 1.2rem; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #333; 
+            position: relative; 
+        }
+        
+        .display-container { 
+            background: #000; 
+            height: 100px; 
+            border-radius: 1.5rem; 
+            margin-bottom: 1rem; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-end; 
+            padding: 1rem; 
+            text-align: right; 
+            border: 1px solid #444; 
+            overflow: hidden; 
+            box-shadow: inset 0 0 10px rgba(255,0,0,0.2); 
         }
 
-        .link-item {
-            background: #0d1117;
-            padding: 10px;
-            border-radius: 8px;
-            color: #8b949e;
-            text-decoration: none;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        #res { font-size: 2rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; }
+        
+        .key { 
+            background: var(--key); 
+            color: var(--acc); 
+            border-radius: 1rem; 
+            height: 68px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.1s; 
+            border-bottom: 3px solid rgba(0,0,0,0.5); 
+        }
+        .key:active { transform: scale(0.95); border-bottom: 0px; }
+        
+        .key-rgb { animation: key-glow 3s infinite alternate; }
+        @keyframes key-glow { 
+            0% { box-shadow: inset 0 0 5px rgba(255,0,0,0.4); } 
+            100% { box-shadow: inset 0 0 5px rgba(0,255,255,0.4); } 
         }
 
-        .action-btn {
-            background: linear-gradient(90deg, #8e0e00, #1f1c18);
-            color: white;
-            padding: 12px;
-            border-radius: 20px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+        .car-icon { width: 44px; height: 26px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .modal.active { display: flex; }
+        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; transform: scale(0.8); }
+        
+        .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; transition: 0.3s; }
+        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="calc-wrapper">
-    <div class="header">
-        <h1>STAR INDIA AGENCIES</h1>
-        <small style="color: gray;">PVT. LTD.</small>
+    <div class="calculator-container">
+        <div id="mainFrame" class="rgb-frame">
+            <div class="calculator-body">
+                <div class="mb-4">
+                    <span class="text-[10px] font-bold text-red-500 block mb-2 tracking-widest uppercase">Star India Agencies Pvt. Ltd.</span>
+                    <div class="flex gap-2">
+                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
+                        <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
+                    </div>
+                </div>
+
+                <div class="display-container">
+                    <div id="res">0</div>
+                </div>
+
+                <div id="key-grid" class="grid grid-cols-4 gap-2"></div>
+            </div>
+        </div>
     </div>
 
-    <div id="display">0</div>
-
-    <div class="keypad">
-        <button onclick="clearDisplay()">C</button>
-        <button onclick="appendOperator('/')">÷</button>
-        <button onclick="appendOperator('*')">×</button>
-        <button onclick="deleteLast()">⌫</button>
-        
-        <button onclick="appendNumber('7')">7</button>
-        <button onclick="appendNumber('8')">8</button>
-        <button onclick="appendNumber('9')">9</button>
-        <button onclick="appendOperator('-')">-</button>
-        
-        <button onclick="appendNumber('4')">4</button>
-        <button onclick="appendNumber('5')">5</button>
-        <button onclick="appendNumber('6')">6</button>
-        <button onclick="appendOperator('+')">+</button>
-        
-        <button onclick="appendNumber('1')">1</button>
-        <button onclick="appendNumber('2')">2</button>
-        <button onclick="appendNumber('3')">3</button>
-        <button onclick="calculatePercentage()">%</button>
-        
-        <button class="btn-wide" onclick="appendNumber('0')">0</button>
-        <button onclick="appendNumber('.')">.</button>
-        <button onclick="calculateResult()" style="background: var(--neon-red); color: white;">=</button>
+    <div id="themeModal" class="modal">
+        <div class="cfg-card bg-[#0f0f1a]">
+            <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">SYSTEM CFG</h2>
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase">Visual Theme</label>
+                    <select id="themeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
+                        <option value="black">Mechanical Black</option>
+                        <option value="indigo">Black Indigo</option>
+                        <option value="white">Hybrid White</option>
+                        <option value="pink">Cyber Pink</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase">RGB Mode</label>
+                    <select id="rgbModeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
+                        <option value="classic">Classic Red (Mahindra)</option>
+                        <option value="neon">Neon Blue/Cyan</option>
+                        <option value="rainbow">RGB Rainbow</option>
+                        <option value="gold">Luxury Gold</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase">Mechanical Switches</label>
+                    <select id="audioSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
+                        <option value="blue">Blue Switch (Clicky)</option>
+                        <option value="brown">Brown Switch (Tactile)</option>
+                        <option value="red">Red Switch (Linear)</option>
+                        <option value="retro">Retro Typewriter</option>
+                    </select>
+                </div>
+                <button onclick="toggleRGB()" id="rgbBtn" class="w-full bg-green-900/30 text-green-400 p-2 rounded border border-green-700 text-xs font-bold uppercase">Frame Power: ON</button>
+            </div>
+            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">SAVE & APPLY</button>
+        </div>
     </div>
 
-    <div class="links-container">
-        <a href="https://facebook.com/starkgp1" class="link-item">🌐 Facebook: starkgp1</a>
-        <a href="https://instagram.com/starindia" class="link-item">📸 Instagram: starindia</a>
-        <a href="http://starkgp.com" class="link-item">💻 Website: starkgp.com</a>
-        
-        <a href="#" class="action-btn">🚗 BOOK NEW CAR</a>
-        <a href="#" class="action-btn">🔑 BOOK TEST DRIVE</a>
+    <div id="contactModal" class="modal">
+        <div class="cfg-card bg-[#0f0f1a] border-red-600">
+            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT DEALERSHIP</h2>
+            <div class="space-y-2 mb-4">
+                <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
+                <a href="tel:7067321621" class="contact-btn">🔑 BOOK TEST DRIVE</a>
+                <a href="tel:9800055555" class="contact-btn !bg-indigo-800">🛠️ BOOK A SERVICE</a>
+                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP US</a>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-4">
+                <div class="flex justify-center gap-4">
+                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link">
+                        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert">
+                    </a>
+                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert">
+                    </a>
+                    <a href="https://www.starkgp.com" target="_blank" class="social-link">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert">
+                    </a>
+                </div>
+            </div>
+            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
+        </div>
     </div>
-</div>
 
-<script>
-    let currentInput = "0";
-    const displayElement = document.getElementById('display');
+    <script>
+        const carIcons = {
+            '1': 'icons/Thar.png', '2': 'icons/3xo.png', '3': 'icons/be6e.png',
+            '4': 'icons/xev9e.png', '5': 'icons/xuv400.png', '6': 'icons/XUV700.png',
+            '7': 'icons/scorpio.png', '8': 'icons/Bolero.png', '9': 'icons/BoleroNeo.png'
+        };
 
-    function updateDisplay() {
-        displayElement.innerText = currentInput;
-    }
+        const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '=', '0', '.'];
+        let expr = "0", audioCtx = null;
 
-    function appendNumber(num) {
-        if (currentInput === "0") currentInput = num;
-        else currentInput += num;
-        updateDisplay();
-    }
-
-    function appendOperator(op) {
-        const lastChar = currentInput.slice(-1);
-        if (['+','-','*','/'].includes(lastChar)) {
-            currentInput = currentInput.slice(0, -1) + op;
-        } else {
-            currentInput += op;
+        function updateSettings() {
+            const theme = document.getElementById('themeSelect').value;
+            const audio = document.getElementById('audioSelect').value;
+            const rgbMode = document.getElementById('rgbModeSelect').value;
+            const rgbOn = !document.getElementById('mainFrame').classList.contains('rgb-off');
+            localStorage.setItem('mahindraCfg', JSON.stringify({ theme, audio, rgbMode, rgbOn }));
+            applyTheme(theme);
+            applyRGBMode(rgbMode);
         }
-        updateDisplay();
-    }
 
-    function clearDisplay() {
-        currentInput = "0";
-        updateDisplay();
-    }
-
-    function deleteLast() {
-        currentInput = currentInput.slice(0, -1);
-        if (currentInput === "") currentInput = "0";
-        updateDisplay();
-    }
-
-    function calculatePercentage() {
-        try {
-            // Evaluates current string and divides by 100
-            let result = eval(currentInput) / 100;
-            currentInput = result.toString();
-            updateDisplay();
-        } catch {
-            currentInput = "Error";
-            updateDisplay();
+        function applyTheme(t) {
+            const themes = {
+                black: { bg: '#050505', key: '#1a1a2e', acc: '#ff1f1f', txt: '#fff' },
+                indigo: { bg: '#020617', key: '#1e1b4b', acc: '#818cf8', txt: '#e0e7ff' },
+                white: { bg: '#f9fafb', key: '#ffffff', acc: '#1f2937', txt: '#111' },
+                pink: { bg: '#fdf2f8', key: '#fce7f3', acc: '#be185d', txt: '#831843' }
+            };
+            const s = themes[t];
+            document.documentElement.style.setProperty('--bg', s.bg);
+            document.documentElement.style.setProperty('--key', s.key);
+            document.documentElement.style.setProperty('--acc', s.acc);
+            document.documentElement.style.setProperty('--txt', s.txt);
         }
-    }
 
-    function calculateResult() {
-        try {
-            // Using a simple eval for this prototype
-            let result = eval(currentInput);
-            currentInput = result.toString();
-            updateDisplay();
-        } catch {
-            currentInput = "Error";
-            updateDisplay();
+        function applyRGBMode(m) {
+            const root = document.documentElement;
+            const grads = {
+                classic: 'linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111)',
+                neon: 'linear-gradient(var(--angle), #00f2ff, #000, #00f2ff, #111)',
+                rainbow: 'linear-gradient(var(--angle), #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)',
+                gold: 'linear-gradient(var(--angle), #ffd700, #222, #ffd700, #111)'
+            };
+            root.style.setProperty('--rgb-grad', grads[m]);
         }
-    }
-</script>
 
+        function toggleRGB() {
+            const frame = document.getElementById('mainFrame');
+            frame.classList.toggle('rgb-off');
+            document.getElementById('rgbBtn').innerText = frame.classList.contains('rgb-off') ? "Frame Power: OFF" : "Frame Power: ON";
+            updateSettings();
+        }
+
+        function playSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const type = document.getElementById('audioSelect').value;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = (type === 'blue') ? 'square' : (type === 'brown') ? 'triangle' : (type === 'red') ? 'sine' : 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function renderKeys() {
+            const grid = document.getElementById('key-grid');
+            grid.innerHTML = "";
+            keys.forEach(k => {
+                const isDigit = /[1-9]/.test(k);
+                const btn = document.createElement('button');
+                btn.className = `key ${k === '0' ? 'col-span-2' : ''} ${isDigit ? 'key-rgb' : ''}`;
+                btn.innerHTML = carIcons[k] ? `<img src="${carIcons[k]}" class="car-icon"><span class="key-digit">${k}</span>` : `<span class="key-digit">${k}</span>`;
+                btn.onclick = () => {
+                    playSound();
+                    if (k === 'C') expr = "0";
+                    else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
+                    else if (k === '=') { try { expr = eval(expr.replace('×', '*').replace('÷', '/')).toString(); } catch { expr = "Error"; } }
+                    else expr = expr === "0" ? k : expr + k;
+                    document.getElementById('res').innerText = expr;
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function load() {
+            const cfg = JSON.parse(localStorage.getItem('mahindraCfg')) || { theme: 'black', audio: 'blue', rgbMode: 'classic', rgbOn: true };
+            document.getElementById('themeSelect').value = cfg.theme;
+            document.getElementById('audioSelect').value = cfg.audio;
+            document.getElementById('rgbModeSelect').value = cfg.rgbMode;
+            if (!cfg.rgbOn) document.getElementById('mainFrame').classList.add('rgb-off');
+            applyTheme(cfg.theme);
+            applyRGBMode(cfg.rgbMode);
+            renderKeys();
+        }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
+        window.onload = load;
+    </script>
 </body>
 </html>
