@@ -9,103 +9,64 @@
     <style>
         :root { 
             --bg: #050505; --key: #1a1a2e; --acc: #ff1f1f; --txt: #ffffff; 
-            --rgb-speed: 4s; 
-            --rgb-grad: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111);
-            --angle: 0deg;
+            --rgb-speed: 3s; 
+            --rgb-grad: linear-gradient(45deg, #ff0000, #333, #ff0000, #9f1239);
         }
         
         body { 
-            background-color: #000; 
-            font-family: 'Rajdhani', sans-serif; 
-            color: var(--txt); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100dvh; 
-            margin: 0; 
-            overflow-y: auto; 
-            overflow-x: hidden;
+            background-color: #000; font-family: 'Rajdhani', sans-serif; color: var(--txt); 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100dvh; margin: 0; overflow-y: auto; overflow-x: hidden;
         }
 
-        /* Adjusted Scale: Decreased by 25% from 1.75 to 1.5 */
         .calculator-container {
-            transform: scale(1.5); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            margin: 100px 0; 
+            transform: scale(1.5); display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s ease; margin: 100px 0;
         }
 
-        @media (max-width: 600px) {
-            .calculator-container { transform: scale(1.2); margin: 60px 0; }
-        }
-        @media (max-width: 400px) {
-            .calculator-container { transform: scale(1.0); margin: 20px 0; }
-        }
-
+        /* Moving Lightning Frame */
         .rgb-frame { 
-            padding: 4px; 
-            border-radius: 2.6rem; 
-            background: #111; 
-            transition: 0.5s;
+            padding: 4px; border-radius: 2.6rem; 
             background: var(--rgb-grad);
-            animation: rotate var(--rgb-speed) linear infinite;
+            background-size: 400% 400%;
+            animation: flow var(--rgb-speed) ease infinite;
+            box-shadow: 0 0 20px rgba(255, 31, 31, 0.3);
         }
 
-        .rgb-off { background: #222 !important; animation: none !important; }
-
-        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-        @keyframes rotate { to { --angle: 360deg; } }
+        @keyframes flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         .calculator-body { 
-            width: 350px; 
-            height: 720px; 
-            background: var(--bg); 
-            border-radius: 2.5rem; 
-            padding: 1.2rem; 
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid #333; 
-            position: relative; 
+            width: 350px; height: 720px; background: var(--bg); border-radius: 2.5rem; 
+            padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid #333; position: relative; 
         }
         
         .display-container { 
-            background: #000; 
-            height: 100px; 
-            border-radius: 1.5rem; 
-            margin-bottom: 1rem; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            padding: 1rem; 
-            text-align: right; 
-            border: 1px solid #444; 
-            overflow: hidden; 
-            box-shadow: inset 0 0 10px rgba(255,0,0,0.2); 
+            background: #000; height: 100px; border-radius: 1.5rem; margin-bottom: 1rem; 
+            display: flex; flex-direction: column; justify-content: flex-end; 
+            padding: 1rem; text-align: right; border: 1px solid #444; overflow: hidden; 
+            box-shadow: inset 0 0 15px rgba(255,0,0,0.2); 
         }
 
-        #res { font-size: 2rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; }
+        #res { font-size: 2.2rem; font-weight: bold; font-family: 'Orbitron'; color: #fff; }
         
         .key { 
-            background: var(--key); 
-            color: var(--acc); 
-            border-radius: 1rem; 
-            height: 64px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            transition: 0.1s; 
-            border-bottom: 3px solid rgba(0,0,0,0.5); 
-            font-weight: bold;
+            background: var(--key); color: var(--acc); border-radius: 1rem; height: 64px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: 0.1s; border-bottom: 3px solid rgba(0,0,0,0.5); font-weight: bold;
         }
-        .key:active { transform: scale(0.95); border-bottom: 0px; }
+        .key:active { transform: scale(0.92); border-bottom: 0px; }
         
-        .key-rgb { animation: key-glow 3s infinite alternate; }
-        @keyframes key-glow { 
-            0% { box-shadow: inset 0 0 5px rgba(255,0,0,0.4); } 
-            100% { box-shadow: inset 0 0 5px rgba(0,255,255,0.4); } 
+        /* Moving Lightning Keys */
+        .key-rgb { 
+            position: relative; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, var(--key) 60%, rgba(255,31,31,0.2));
+            background-size: 200% 200%;
+            animation: flow 4s linear infinite;
         }
 
         .car-icon { width: 44px; height: 26px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
@@ -114,8 +75,7 @@
         .modal.active { display: flex; }
         .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; }
         
-        .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; transition: 0.3s; }
-        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
+        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -126,7 +86,7 @@
                 <div class="mb-4">
                     <span class="text-[10px] font-bold text-red-500 block mb-2 tracking-widest uppercase">Star India Agencies Pvt. Ltd.</span>
                     <div class="flex gap-2">
-                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
+                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Mechanical CFG</button>
                         <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
                     </div>
                 </div>
@@ -142,44 +102,39 @@
 
     <div id="themeModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a]">
-            <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">SYSTEM CFG</h2>
+            <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">HARDWARE CFG</h2>
             <div class="space-y-3 text-left">
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase">Visual Theme</label>
-                    <select id="themeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
-                        <option value="black">Mechanical Black</option>
-                        <option value="indigo">Black Indigo</option>
-                        <option value="white">Hybrid White</option>
-                        <option value="pink">Cyber Pink</option>
+                    <label class="text-[9px] text-gray-400 uppercase">Mechanical Switches</label>
+                    <select id="audioSelect" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
+                        <option value="blue">Blue Switch (Clicky)</option>
+                        <option value="brown">Brown Switch (Tactile)</option>
+                        <option value="red">Red Switch (Linear)</option>
+                        <option value="retro">Retro Typewriter</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase">RGB Mode</label>
+                    <label class="text-[9px] text-gray-400 uppercase">RGB Light Profile</label>
                     <select id="rgbModeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
-                        <option value="classic">Classic Red (Mahindra)</option>
-                        <option value="neon">Neon Blue/Cyan</option>
-                        <option value="rainbow">RGB Rainbow</option>
-                        <option value="gold">Luxury Gold</option>
+                        <option value="classic">Mahindra Pulse (Red)</option>
+                        <option value="neon">Neon Storm (Cyan/Blue)</option>
+                        <option value="rainbow">Spectrum Flow (RGB)</option>
                     </select>
                 </div>
-                <button onclick="toggleRGB()" id="rgbBtn" class="w-full bg-green-900/30 text-green-400 p-2 rounded border border-green-700 text-xs font-bold uppercase">Frame Power: ON</button>
+                <div class="p-3 bg-red-900/10 border border-red-900/30 rounded text-[10px] text-red-400">
+                    NOTE: Frame RGB power is locked to "ALWAYS ON" for maximum performance.
+                </div>
             </div>
-            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">SAVE & APPLY</button>
+            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">APPLY CHANGES</button>
         </div>
     </div>
 
     <div id="contactModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a] border-red-600">
-            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT DEALERSHIP</h2>
+            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT</h2>
             <div class="space-y-2 mb-4">
-                <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
-                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP US</a>
-            </div>
-            <div class="border-t border-gray-800 pt-4">
-                <div class="flex justify-center gap-4">
-                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert"></a>
-                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert"></a>
-                </div>
+                <a href="tel:7067321621" class="contact-btn">🚗 NEW CAR SALES</a>
+                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP</a>
             </div>
             <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
         </div>
@@ -192,49 +147,49 @@
             '7': 'icons/scorpio.png', '8': 'icons/Bolero.png', '9': 'icons/BoleroNeo.png'
         };
 
-        // Added '%' to the key list
         const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '%', '0', '.', '='];
         let expr = "0", audioCtx = null;
 
+        function playMechanicalSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const type = document.getElementById('audioSelect').value;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            // Re-implementing the 4 switch types
+            if (type === 'blue') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+            } else if (type === 'brown') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            } else if (type === 'red') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            } else if (type === 'retro') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(40, audioCtx.currentTime);
+            }
+
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
         function updateSettings() {
-            const theme = document.getElementById('themeSelect').value;
             const rgbMode = document.getElementById('rgbModeSelect').value;
-            const rgbOn = !document.getElementById('mainFrame').classList.contains('rgb-off');
-            localStorage.setItem('mahindraCfg', JSON.stringify({ theme, rgbMode, rgbOn }));
-            applyTheme(theme);
-            applyRGBMode(rgbMode);
-        }
-
-        function applyTheme(t) {
-            const themes = {
-                black: { bg: '#050505', key: '#1a1a2e', acc: '#ff1f1f', txt: '#fff' },
-                indigo: { bg: '#020617', key: '#1e1b4b', acc: '#818cf8', txt: '#e0e7ff' },
-                white: { bg: '#f9fafb', key: '#ffffff', acc: '#1f2937', txt: '#111' },
-                pink: { bg: '#fdf2f8', key: '#fce7f3', acc: '#be185d', txt: '#831843' }
-            };
-            const s = themes[t] || themes.black;
-            document.documentElement.style.setProperty('--bg', s.bg);
-            document.documentElement.style.setProperty('--key', s.key);
-            document.documentElement.style.setProperty('--acc', s.acc);
-            document.documentElement.style.setProperty('--txt', s.txt);
-        }
-
-        function applyRGBMode(m) {
             const root = document.documentElement;
             const grads = {
-                classic: 'linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111)',
-                neon: 'linear-gradient(var(--angle), #00f2ff, #000, #00f2ff, #111)',
-                rainbow: 'linear-gradient(var(--angle), #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)',
-                gold: 'linear-gradient(var(--angle), #ffd700, #222, #ffd700, #111)'
+                classic: 'linear-gradient(45deg, #ff0000, #222, #ff0000, #9f1239)',
+                neon: 'linear-gradient(45deg, #00f2ff, #000, #00f2ff, #0ea5e9)',
+                rainbow: 'linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)'
             };
-            root.style.setProperty('--rgb-grad', grads[m] || grads.classic);
-        }
-
-        function toggleRGB() {
-            const frame = document.getElementById('mainFrame');
-            frame.classList.toggle('rgb-off');
-            document.getElementById('rgbBtn').innerText = frame.classList.contains('rgb-off') ? "Frame Power: OFF" : "Frame Power: ON";
-            updateSettings();
+            root.style.setProperty('--rgb-grad', grads[rgbMode]);
         }
 
         function renderKeys() {
@@ -243,23 +198,19 @@
             keys.forEach(k => {
                 const isDigit = /[0-9]/.test(k);
                 const btn = document.createElement('button');
-                // Adjusting grid: '=' takes standard spot, '0' takes 1 spot now to fit '%'
                 btn.className = `key ${isDigit ? 'key-rgb' : ''}`;
                 btn.innerHTML = carIcons[k] ? `<img src="${carIcons[k]}" class="car-icon"><span>${k}</span>` : `<span>${k}</span>`;
                 
                 btn.onclick = () => {
+                    playMechanicalSound();
                     if (k === 'C') expr = "0";
                     else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
                     else if (k === '=') { 
                         try { 
-                            // Handle percentage logic before eval
-                            let formattedExpr = expr.replace(/×/g, '*').replace(/÷/g, '/');
-                            // Replace "Number + Percentage%" with "Number + (Number * Percentage / 100)"
-                            formattedExpr = formattedExpr.replace(/(\d+)\s*([\+\-])\s*(\d+)%/g, '($1 $2 ($1 * $3 / 100))');
-                            // Replace "Number * Percentage%" with "Number * (Percentage / 100)"
-                            formattedExpr = formattedExpr.replace(/(\d+)%/g, '($1/100)');
-                            
-                            expr = eval(formattedExpr).toString(); 
+                            let f = expr.replace(/×/g, '*').replace(/÷/g, '/');
+                            f = f.replace(/(\d+)\s*([\+\-])\s*(\d+)%/g, '($1 $2 ($1 * $3 / 100))');
+                            f = f.replace(/(\d+)%/g, '($1/100)');
+                            expr = eval(f).toString(); 
                         } catch { expr = "Error"; } 
                     }
                     else expr = expr === "0" && k !== '.' ? k : expr + k;
@@ -269,28 +220,12 @@
             });
         }
 
-        function load() {
-            // Defaults to rgbOn: true so it glows by default
-            const cfg = JSON.parse(localStorage.getItem('mahindraCfg')) || { theme: 'black', rgbMode: 'classic', rgbOn: true };
-            document.getElementById('themeSelect').value = cfg.theme;
-            document.getElementById('rgbModeSelect').value = cfg.rgbMode;
-            
-            // Apply RGB state
-            if (!cfg.rgbOn) {
-                document.getElementById('mainFrame').classList.add('rgb-off');
-                document.getElementById('rgbBtn').innerText = "Frame Power: OFF";
-            } else {
-                document.getElementById('mainFrame').classList.remove('rgb-off');
-                document.getElementById('rgbBtn').innerText = "Frame Power: ON";
-            }
-            
-            applyTheme(cfg.theme);
-            applyRGBMode(cfg.rgbMode);
-            renderKeys();
-        }
-
         function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
-        window.onload = load;
+        
+        window.onload = () => {
+            renderKeys();
+            updateSettings();
+        };
     </script>
 </body>
 </html>
