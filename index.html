@@ -9,7 +9,7 @@
     <style>
         :root { 
             --bg: #050505; --key: #1a1a2e; --acc: #ff1f1f; --txt: #ffffff; 
-            --rgb-speed: 4s; 
+            --rgb-speed: 2s; 
             --rgb-grad: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111);
             --angle: 0deg;
         }
@@ -23,27 +23,19 @@
             justify-content: center; 
             min-height: 100dvh; 
             margin: 0; 
-            /* Allow scrolling if 175% scale exceeds small screens */
-            overflow-y: auto; 
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* 75% Total Size Increase Logic */
+        /* Improved Responsive Scaling */
         .calculator-container {
-            transform: scale(1.75); /* 75% larger than original base */
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
-            margin: 150px 0; /* Add margin so scaled content isn't clipped by page edges */
-        }
-
-        /* Responsive Safety: If screen is too small for 1.75, scale down slightly */
-        @media (max-width: 600px) {
-            .calculator-container { transform: scale(1.4); margin: 80px 0; }
-        }
-        @media (max-width: 400px) {
-            .calculator-container { transform: scale(1.1); margin: 40px 0; }
+            width: 100%;
+            height: 100dvh;
+            /* Scales between 0.6 and 1.2 based on viewport width */
+            transform: scale(clamp(0.5, 90vh / 800px, 1.1));
+            transform-origin: center;
         }
 
         .rgb-frame { 
@@ -52,7 +44,9 @@
             background: #111; 
             transition: 0.5s;
             background: var(--rgb-grad);
+            /* Faster animation for "lightning" feel */
             animation: rotate var(--rgb-speed) linear infinite;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
         }
 
         .rgb-off { background: #222 !important; animation: none !important; }
@@ -62,7 +56,7 @@
 
         .calculator-body { 
             width: 350px; 
-            height: 720px; 
+            height: 750px; 
             background: var(--bg); 
             border-radius: 2.5rem; 
             padding: 1.2rem; 
@@ -113,10 +107,12 @@
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .modal.active { display: flex; }
-        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; transform: scale(0.8); }
+        .cfg-card { border: 2px solid #444; padding: 1.5rem; border-radius: 2.5rem; width: 330px; text-align: center; }
         
         .social-link { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #111; border: 1px solid #333; transition: 0.3s; }
         .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; text-decoration: none; }
+        
+        #history-list { max-height: 200px; overflow-y: auto; text-align: left; font-family: monospace; font-size: 14px; color: #aaa; }
     </style>
 </head>
 <body>
@@ -126,9 +122,10 @@
             <div class="calculator-body">
                 <div class="mb-4">
                     <span class="text-[10px] font-bold text-red-500 block mb-2 tracking-widest uppercase">Star India Agencies Pvt. Ltd.</span>
-                    <div class="flex gap-2">
-                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
-                        <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
+                    <div class="flex gap-1">
+                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[8px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
+                        <button onclick="toggleModal('historyModal')" class="flex-1 bg-gray-800 text-[8px] py-2 rounded-lg border border-gray-600 font-bold uppercase">📜 History</button>
+                        <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[8px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
                     </div>
                 </div>
 
@@ -178,6 +175,15 @@
         </div>
     </div>
 
+    <div id="historyModal" class="modal">
+        <div class="cfg-card bg-[#0f0f1a] border-gray-600">
+            <h2 class="text-xl font-bold text-gray-400 mb-4 font-['Orbitron']">HISTORY</h2>
+            <div id="history-list" class="space-y-2 mb-4 p-2 bg-black rounded-lg"></div>
+            <button onclick="clearHistory()" class="text-[10px] text-red-500 mb-4 block w-full text-center">CLEAR ALL</button>
+            <button onclick="toggleModal('historyModal')" class="w-full bg-gray-700 text-white font-bold py-3 rounded-xl">CLOSE</button>
+        </div>
+    </div>
+
     <div id="contactModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a] border-red-600">
             <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT DEALERSHIP</h2>
@@ -187,18 +193,11 @@
                 <a href="tel:9800055555" class="contact-btn !bg-indigo-800">🛠️ BOOK A SERVICE</a>
                 <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP US</a>
             </div>
-            
             <div class="border-t border-gray-800 pt-4">
                 <div class="flex justify-center gap-4">
-                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link">
-                        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert">
-                    </a>
-                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert">
-                    </a>
-                    <a href="https://www.starkgp.com" target="_blank" class="social-link">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert">
-                    </a>
+                    <a href="https://www.facebook.com/starkgp1" target="_blank" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-5 h-5 invert"></a>
+                    <a href="https://www.instagram.com/mahindra_starindia" target="_blank" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-5 h-5 invert"></a>
+                    <a href="https://www.starkgp.com" target="_blank" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" class="w-5 h-5 invert"></a>
                 </div>
             </div>
             <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
@@ -213,7 +212,7 @@
         };
 
         const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '=', '0', '.'];
-        let expr = "0", audioCtx = null;
+        let expr = "0", audioCtx = null, history = JSON.parse(localStorage.getItem('m_history')) || [];
 
         function updateSettings() {
             const theme = document.getElementById('themeSelect').value;
@@ -270,6 +269,20 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.1);
         }
 
+        function updateHistory(item) {
+            history.unshift(item);
+            if(history.length > 20) history.pop();
+            localStorage.setItem('m_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = history.length ? history.map(h => `<div class="border-b border-gray-800 py-1">${h}</div>`).join('') : "No calculations yet.";
+        }
+
+        function clearHistory() { history = []; localStorage.removeItem('m_history'); renderHistory(); }
+
         function renderKeys() {
             const grid = document.getElementById('key-grid');
             grid.innerHTML = "";
@@ -282,7 +295,13 @@
                     playSound();
                     if (k === 'C') expr = "0";
                     else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
-                    else if (k === '=') { try { expr = eval(expr.replace('×', '*').replace('÷', '/')).toString(); } catch { expr = "Error"; } }
+                    else if (k === '=') { 
+                        try { 
+                            let result = eval(expr.replace('×', '*').replace('÷', '/')).toString(); 
+                            updateHistory(`${expr} = ${result}`);
+                            expr = result;
+                        } catch { expr = "Error"; } 
+                    }
                     else expr = expr === "0" ? k : expr + k;
                     document.getElementById('res').innerText = expr;
                 };
@@ -299,6 +318,7 @@
             applyTheme(cfg.theme);
             applyRGBMode(cfg.rgbMode);
             renderKeys();
+            renderHistory();
         }
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
