@@ -10,94 +10,32 @@
         :root { --main-bg: #050505; --key-bg: #1a1a2e; --accent: #ff1f1f; --text-color: #ffffff; }
         body { background-color: #000; font-family: 'Rajdhani', sans-serif; color: var(--text-color); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
         
+        /* RGB Persistence logic */
         .rgb-frame { padding: 4px; border-radius: 2.6rem; background: #111; transition: all 0.5s; }
         .rgb-active { background: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111); animation: rotate 4s linear infinite; }
         @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
         @keyframes rotate { to { --angle: 360deg; } }
 
-        .calculator-body { width: 360px; height: 760px; background: var(--main-bg); border-radius: 2.5rem; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid #333; position: relative; }
+        .calculator-body { width: 360px; height: 740px; background: var(--main-bg); border-radius: 2.5rem; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid #333; position: relative; }
         
-        /* FIX: Numbers stay inside and are scrollable */
-        .display-container { background: #000; height: 110px; border-radius: 1.5rem; margin-bottom: 1rem; display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; text-align: right; border: 1px solid #444; overflow: hidden; }
-        #res { font-size: 1.8rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; display: block; width: 100%; }
+        /* FIX: Number Overflow */
+        .display-container { background: #000; height: 100px; border-radius: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: flex-end; padding: 1rem; border: 1px solid #444; overflow: hidden; }
+        #res { font-size: 1.8rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; width: 100%; text-align: right; }
         #res::-webkit-scrollbar { display: none; }
 
-        .key { background: var(--key-bg); color: var(--accent); border-radius: 1rem; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-bottom: 3px solid rgba(0,0,0,0.4); }
-        .key:active { transform: scale(0.95); }
+        .key { background: var(--key-bg); color: var(--accent); border-radius: 1rem; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-bottom: 3px solid rgba(0,0,0,0.4); transition: 0.1s; }
+        .key:active { transform: scale(0.95); border-bottom: 0px; }
         .key-digit { font-size: 1.6rem; font-weight: 800; font-family: 'Orbitron'; }
-        
-        /* Icon sizing to fit keys perfectly */
         .car-icon { width: 42px; height: 24px; object-fit: contain; margin-bottom: 2px; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal.active { display: flex; }
-        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 10px; text-align: center; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.75rem; text-decoration: none; }
+        .contact-btn { background: linear-gradient(90deg, #e11d48, #9f1239); color: white; font-weight: bold; border-radius: 0.8rem; padding: 12px; text-align: center; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; text-decoration: none; width: 100%; }
     </style>
 </head>
 <body>
 
     <div id="mainFrame" class="rgb-frame rgb-active">
         <div class="calculator-body">
-            <div class="mb-4">
-                <span class="text-[11px] font-bold text-red-500 block mb-2">STAR INDIA AGENCIES PVT. LTD.</span>
-                <div class="flex gap-2">
-                    <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-1.5 rounded-lg border border-gray-700">⚙️ SETTINGS</button>
-                    <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-1.5 rounded-lg border border-red-600">📞 CONTACT DEALERSHIP</button>
-                </div>
-            </div>
-
-            <div class="display-container">
-                <div id="res">0</div>
-            </div>
-
-            <div id="key-grid" class="grid grid-cols-4 gap-2"></div>
-        </div>
-    </div>
-
-    <div id="contactModal" class="modal">
-        <div class="bg-[#0f0f1a] border-2 border-red-600 rounded-[2.5rem] p-6 w-80 text-center">
-            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">STAR INDIA AGENCIES</h2>
-            <div class="space-y-2">
-                <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
-                <a href="tel:7067321621" class="contact-btn">🔑 BOOK TEST DRIVE</a>
-                <a href="tel:9800055555" class="contact-btn !bg-indigo-800">🛠️ BOOK A SERVICE</a>
-                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP DEALERSHIP</a>
-            </div>
-            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px]">CLOSE</button>
-        </div>
-    </div>
-
-    <script>
-        // Use your icons folder! Ensure filenames match exactly
-        const carIcons = {
-            '1': 'icons/thar.png', '2': 'icons/3xo.png', '3': 'icons/be6e.png', 
-            '4': 'icons/xev9e.png', '5': 'icons/xuv400.png', '6': 'icons/xuv700.png',
-            '7': 'icons/scorpio.png', '8': 'icons/bolero.png', '9': 'icons/xuv3xo.png'
-        };
-
-        const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '=', '0', '.'];
-        let expr = "0";
-
-        function renderKeys() {
-            const grid = document.getElementById('key-grid');
-            grid.innerHTML = "";
-            keys.forEach(k => {
-                const btn = document.createElement('button');
-                btn.className = `key ${k === '0' ? 'col-span-2' : ''}`;
-                btn.innerHTML = carIcons[k] ? `<img src="${carIcons[k]}" class="car-icon"><span class="key-digit">${k}</span>` : `<span class="key-digit">${k}</span>`;
-                btn.onclick = () => {
-                    if (k === 'C') expr = "0";
-                    else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
-                    else if (k === '=') { try { expr = eval(expr.replace('×', '*').replace('÷', '/')).toString(); } catch { expr = "Error"; } }
-                    else expr = expr === "0" ? k : expr + k;
-                    document.getElementById('res').innerText = expr;
-                    document.getElementById('res').scrollLeft = document.getElementById('res').scrollWidth;
-                };
-                grid.appendChild(btn);
-            });
-        }
-        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
-        window.onload = renderKeys;
-    </script>
-</body>
-</html>
+            <div class="flex gap-2 mb-4">
+                <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[10px] py-2 rounded-lg border
