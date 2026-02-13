@@ -10,7 +10,6 @@
         :root { --main-bg: #050505; --key-bg: #1a1a2e; --accent: #ff1f1f; --text-color: #ffffff; }
         body { background-color: #000; font-family: 'Rajdhani', sans-serif; color: var(--text-color); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
         
-        /* Persistent RGB Frame */
         .rgb-frame { padding: 4px; border-radius: 2.6rem; background: #111; transition: all 0.5s; }
         .rgb-active { background: linear-gradient(var(--angle), #ff0000, #333, #ff0000, #111); animation: rotate 4s linear infinite; }
         @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
@@ -18,24 +17,17 @@
 
         .calculator-body { width: 360px; height: 760px; background: var(--main-bg); border-radius: 2.5rem; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid #333; position: relative; }
         
-        /* Fixed Overflow Display */
-        .display-container { background: #000; height: 110px; border-radius: 1.5rem; margin-bottom: 1rem; display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; text-align: right; border: 1px solid #444; overflow: hidden; position: relative; }
-        #history-log { font-size: 0.7rem; color: #666; font-family: 'Orbitron'; height: 20px; overflow: hidden; margin-bottom: 4px; }
-        #res { font-size: 1.8rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; }
+        /* FIX: Numbers stay inside and are scrollable */
+        .display-container { background: #000; height: 110px; border-radius: 1.5rem; margin-bottom: 1rem; display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; text-align: right; border: 1px solid #444; overflow: hidden; }
+        #res { font-size: 1.8rem; font-weight: bold; font-family: 'Orbitron'; white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff; display: block; width: 100%; }
         #res::-webkit-scrollbar { display: none; }
 
-        /* RGB Keys 1-9 */
-        .key-rgb { animation: key-glow 3s infinite alternate; border: 1px solid rgba(255,255,255,0.1); }
-        @keyframes key-glow { 
-            0% { box-shadow: inset 0 0 5px rgba(255,0,0,0.3); } 
-            50% { box-shadow: inset 0 0 12px rgba(0,255,255,0.2); }
-            100% { box-shadow: inset 0 0 5px rgba(255,0,255,0.3); } 
-        }
-
-        .key { background: var(--key-bg); color: var(--accent); border-radius: 1rem; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: transform 0.1s; border-bottom: 3px solid rgba(0,0,0,0.4); }
-        .key:active { transform: scale(0.95); border-bottom: 1px solid transparent; }
-        .key-digit { font-size: 1.6rem; font-weight: 800; font-family: 'Orbitron'; z-index: 2; }
-        .car-icon { width: 42px; height: 24px; object-fit: contain; margin-bottom: 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        .key { background: var(--key-bg); color: var(--accent); border-radius: 1rem; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-bottom: 3px solid rgba(0,0,0,0.4); }
+        .key:active { transform: scale(0.95); }
+        .key-digit { font-size: 1.6rem; font-weight: 800; font-family: 'Orbitron'; }
+        
+        /* Icon sizing to fit keys perfectly */
+        .car-icon { width: 42px; height: 24px; object-fit: contain; margin-bottom: 2px; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal.active { display: flex; }
@@ -47,7 +39,7 @@
     <div id="mainFrame" class="rgb-frame rgb-active">
         <div class="calculator-body">
             <div class="mb-4">
-                <span class="text-[11px] font-bold text-red-500 tracking-[0.1em] block mb-2">STAR INDIA AGENCIES PVT. LTD.</span>
+                <span class="text-[11px] font-bold text-red-500 block mb-2">STAR INDIA AGENCIES PVT. LTD.</span>
                 <div class="flex gap-2">
                     <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-1.5 rounded-lg border border-gray-700">⚙️ SETTINGS</button>
                     <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-1.5 rounded-lg border border-red-600">📞 CONTACT DEALERSHIP</button>
@@ -55,7 +47,6 @@
             </div>
 
             <div class="display-container">
-                <div id="history-log"></div>
                 <div id="res">0</div>
             </div>
 
@@ -63,149 +54,50 @@
         </div>
     </div>
 
-    <div id="themeModal" class="modal">
-        <div class="bg-[#0f0f1a] border-2 border-gray-700 rounded-[2.5rem] p-8 w-80">
-            <h2 class="text-xl font-bold text-red-500 mb-6 font-['Orbitron'] text-center">SYSTEM CFG</h2>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="text-[10px] text-gray-400 block mb-1 uppercase">Visual Profile</label>
-                    <select id="themeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
-                        <option value="black">Mechanical Black</option>
-                        <option value="white">Hybrid White</option>
-                        <option value="pink">Cyber Pink</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-400 block mb-1 uppercase">Audio Driver</label>
-                    <select id="soundSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
-                        <option value="blue">Blue Switch (Clicky)</option>
-                        <option value="brown">Brown Switch</option>
-                    </select>
-                </div>
-                <button onclick="toggleRGB(); updateSettings();" id="rgbToggleBtn" class="w-full bg-green-900/30 text-green-400 p-2 rounded border border-green-700 text-xs font-bold">RGB FRAME: ON</button>
-            </div>
-            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mb-4">SAVE & EXIT</button>
-            <div class="text-center">
-                <p class="text-[9px] text-gray-500 mb-1">Get your Personal/Business calculator:</p>
-                <a href="https://www.facebook.com/scrollzea" class="text-[9px] text-cyan-500 block">www.facebook.com/scrollzea</a>
-                <a href="https://wa.me/917029194911" class="bg-green-600 text-white text-[9px] py-1 px-4 rounded-full font-bold mt-2 inline-block">WHATSAPP DEVELOPER</a>
-            </div>
-        </div>
-    </div>
-
     <div id="contactModal" class="modal">
         <div class="bg-[#0f0f1a] border-2 border-red-600 rounded-[2.5rem] p-6 w-80 text-center">
             <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">STAR INDIA AGENCIES</h2>
-            <div class="mb-4 space-y-2">
-                <a href="https://www.facebook.com/starkgp1" class="flex items-center gap-3 p-2 bg-white/5 rounded-lg text-[11px]">🌐 Facebook: starkgp1</a>
-                <a href="https://www.instagram.com/mahindra_starindia" class="flex items-center gap-3 p-2 bg-white/5 rounded-lg text-[11px]">📸 Instagram: starindia</a>
-                <a href="http://www.starkgp.com" class="flex items-center gap-3 p-2 bg-white/5 rounded-lg text-[11px]">💻 Website: starkgp.com</a>
-            </div>
             <div class="space-y-2">
                 <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
                 <a href="tel:7067321621" class="contact-btn">🔑 BOOK TEST DRIVE</a>
                 <a href="tel:9800055555" class="contact-btn !bg-indigo-800">🛠️ BOOK A SERVICE</a>
                 <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP DEALERSHIP</a>
             </div>
-            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
+            <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px]">CLOSE</button>
         </div>
     </div>
 
     <script>
+        // Use your icons folder! Ensure filenames match exactly
         const carIcons = {
-            '1': 'https://i.ibb.co/v4S8L8x/thar-icon.png', '2': 'https://i.ibb.co/mqPzS9y/xuv3xo.png',
-            '3': 'https://i.ibb.co/G3Xm8mC/be6e.png', '4': 'https://i.ibb.co/YyYxKz1/xev9e.png',
-            '5': 'https://i.ibb.co/0VpS8mC/xuv400.png', '6': 'https://i.ibb.co/Wv9m0mC/xuv700.png',
-            '7': 'https://i.ibb.co/v4S8L8x/thar-icon.png', '8': 'https://i.ibb.co/mqPzS9y/xuv3xo.png',
-            '9': 'https://i.ibb.co/G3Xm8mC/be6e.png'
+            '1': 'icons/thar.png', '2': 'icons/3xo.png', '3': 'icons/be6e.png', 
+            '4': 'icons/xev9e.png', '5': 'icons/xuv400.png', '6': 'icons/xuv700.png',
+            '7': 'icons/scorpio.png', '8': 'icons/bolero.png', '9': 'icons/xuv3xo.png'
         };
 
         const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '=', '0', '.'];
-        let expr = "0", history = "", audioCtx = null;
-
-        function updateSettings() {
-            const settings = {
-                theme: document.getElementById('themeSelect').value,
-                sound: document.getElementById('soundSelect').value,
-                rgb: document.getElementById('mainFrame').classList.contains('rgb-active')
-            };
-            localStorage.setItem('mahindraCfg', JSON.stringify(settings));
-            applyTheme(settings.theme);
-        }
-
-        function loadSettings() {
-            const saved = JSON.parse(localStorage.getItem('mahindraCfg')) || { theme: 'black', sound: 'blue', rgb: true };
-            document.getElementById('themeSelect').value = saved.theme;
-            document.getElementById('soundSelect').value = saved.sound;
-            if (!saved.rgb) document.getElementById('mainFrame').classList.remove('rgb-active');
-            applyTheme(saved.theme);
-            renderKeys();
-        }
-
-        function applyTheme(theme) {
-            const themes = {
-                black: { bg: '#050505', key: '#1a1a2e', acc: '#ff1f1f', txt: '#fff' },
-                white: { bg: '#f9fafb', key: '#ffffff', acc: '#1f2937', txt: '#111' },
-                pink: { bg: '#fdf2f8', key: '#fce7f3', acc: '#be185d', txt: '#831843' }
-            };
-            const s = themes[theme];
-            document.documentElement.style.setProperty('--main-bg', s.bg);
-            document.documentElement.style.setProperty('--key-bg', s.key);
-            document.documentElement.style.setProperty('--accent', s.acc);
-            document.documentElement.style.setProperty('--text-color', s.txt);
-        }
+        let expr = "0";
 
         function renderKeys() {
             const grid = document.getElementById('key-grid');
             grid.innerHTML = "";
             keys.forEach(k => {
-                const isDigit = /[1-9]/.test(k);
                 const btn = document.createElement('button');
-                btn.className = `key ${k === '0' ? 'col-span-2' : ''} ${isDigit ? 'key-rgb' : ''}`;
+                btn.className = `key ${k === '0' ? 'col-span-2' : ''}`;
                 btn.innerHTML = carIcons[k] ? `<img src="${carIcons[k]}" class="car-icon"><span class="key-digit">${k}</span>` : `<span class="key-digit">${k}</span>`;
-                btn.onclick = () => trigger(k);
+                btn.onclick = () => {
+                    if (k === 'C') expr = "0";
+                    else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
+                    else if (k === '=') { try { expr = eval(expr.replace('×', '*').replace('÷', '/')).toString(); } catch { expr = "Error"; } }
+                    else expr = expr === "0" ? k : expr + k;
+                    document.getElementById('res').innerText = expr;
+                    document.getElementById('res').scrollLeft = document.getElementById('res').scrollWidth;
+                };
                 grid.appendChild(btn);
             });
         }
-
-        function trigger(k) {
-            playSound();
-            const res = document.getElementById('res');
-            const log = document.getElementById('history-log');
-
-            if (k === 'C') { expr = "0"; history = ""; }
-            else if (k === '⌫') { expr = expr.length > 1 ? expr.slice(0, -1) : "0"; }
-            else if (k === '=') {
-                try {
-                    history = expr + " =";
-                    expr = eval(expr.replace('×', '*').replace('÷', '/')).toString();
-                } catch { expr = "Error"; }
-            } else {
-                expr = expr === "0" ? k : expr + k;
-            }
-            res.innerText = expr;
-            log.innerText = history;
-            res.scrollLeft = res.scrollWidth;
-        }
-
-        function playSound() {
-            if (!audioCtx) audioCtx = new AudioContext();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = document.getElementById('soundSelect').value === 'blue' ? 'square' : 'sine';
-            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-        }
-
         function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
-        function toggleRGB() { 
-            document.getElementById('mainFrame').classList.toggle('rgb-active'); 
-            document.getElementById('rgbToggleBtn').innerText = `RGB FRAME: ${document.getElementById('mainFrame').classList.contains('rgb-active') ? 'ON' : 'OFF'}`;
-        }
-
-        window.onload = loadSettings;
+        window.onload = renderKeys;
     </script>
 </body>
 </html>
