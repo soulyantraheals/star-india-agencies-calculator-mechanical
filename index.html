@@ -24,16 +24,16 @@
             transition: transform 0.3s ease; margin: 100px 0;
         }
 
-        /* Moving Lightning Frame */
+        /* Moving Lightning Effect for Frame */
         .rgb-frame { 
             padding: 4px; border-radius: 2.6rem; 
             background: var(--rgb-grad);
             background-size: 400% 400%;
-            animation: flow var(--rgb-speed) ease infinite;
+            animation: lightningFlow var(--rgb-speed) linear infinite;
             box-shadow: 0 0 20px rgba(255, 31, 31, 0.3);
         }
 
-        @keyframes flow {
+        @keyframes lightningFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
@@ -63,10 +63,10 @@
         /* Moving Lightning Keys */
         .key-rgb { 
             position: relative; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, var(--key) 60%, rgba(255,31,31,0.2));
+            background: linear-gradient(135deg, var(--key) 50%, rgba(255,31,31,0.25));
             background-size: 200% 200%;
-            animation: flow 4s linear infinite;
+            animation: lightningFlow 4s linear infinite;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .car-icon { width: 44px; height: 26px; object-fit: contain; margin-bottom: 1px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
@@ -86,7 +86,7 @@
                 <div class="mb-4">
                     <span class="text-[10px] font-bold text-red-500 block mb-2 tracking-widest uppercase">Star India Agencies Pvt. Ltd.</span>
                     <div class="flex gap-2">
-                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Mechanical CFG</button>
+                        <button onclick="toggleModal('themeModal')" class="flex-1 bg-gray-900 text-[9px] py-2 rounded-lg border border-gray-700 font-bold uppercase">⚙️ Settings</button>
                         <button onclick="toggleModal('contactModal')" class="flex-1 bg-red-950 text-[9px] py-2 rounded-lg border border-red-600 font-bold uppercase">📞 Contact</button>
                     </div>
                 </div>
@@ -102,8 +102,17 @@
 
     <div id="themeModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a]">
-            <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">HARDWARE CFG</h2>
+            <h2 class="text-xl font-bold text-red-500 mb-4 font-['Orbitron']">SYSTEM CFG</h2>
             <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase">Visual Theme</label>
+                    <select id="themeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
+                        <option value="black">Mechanical Black</option>
+                        <option value="indigo">Black Indigo</option>
+                        <option value="white">Hybrid White</option>
+                        <option value="pink">Cyber Pink</option>
+                    </select>
+                </div>
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase">Mechanical Switches</label>
                     <select id="audioSelect" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
@@ -114,27 +123,28 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase">RGB Light Profile</label>
+                    <label class="text-[9px] text-gray-400 uppercase">RGB Mode</label>
                     <select id="rgbModeSelect" onchange="updateSettings()" class="w-full bg-black border border-gray-700 p-2 rounded text-xs text-white">
-                        <option value="classic">Mahindra Pulse (Red)</option>
-                        <option value="neon">Neon Storm (Cyan/Blue)</option>
-                        <option value="rainbow">Spectrum Flow (RGB)</option>
+                        <option value="classic">Classic Red (Mahindra)</option>
+                        <option value="neon">Neon Blue/Cyan</option>
+                        <option value="rainbow">RGB Rainbow</option>
+                        <option value="gold">Luxury Gold</option>
                     </select>
                 </div>
-                <div class="p-3 bg-red-900/10 border border-red-900/30 rounded text-[10px] text-red-400">
-                    NOTE: Frame RGB power is locked to "ALWAYS ON" for maximum performance.
+                <div class="py-2 px-3 bg-red-950/30 border border-red-800 rounded text-[10px] text-red-400 font-bold">
+                    FRAME POWER: ALWAYS ON
                 </div>
             </div>
-            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">APPLY CHANGES</button>
+            <button onclick="toggleModal('themeModal')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl mt-4">SAVE & APPLY</button>
         </div>
     </div>
 
     <div id="contactModal" class="modal">
         <div class="cfg-card bg-[#0f0f1a] border-red-600">
-            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT</h2>
+            <h2 class="text-lg font-bold text-red-500 mb-4 font-['Orbitron']">CONTACT DEALERSHIP</h2>
             <div class="space-y-2 mb-4">
-                <a href="tel:7067321621" class="contact-btn">🚗 NEW CAR SALES</a>
-                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP</a>
+                <a href="tel:7067321621" class="contact-btn">🚗 BOOK NEW CAR</a>
+                <a href="https://wa.me/917067321621" class="contact-btn !bg-green-600">💬 WHATSAPP US</a>
             </div>
             <button onclick="toggleModal('contactModal')" class="mt-4 text-gray-500 text-[10px] uppercase">Close</button>
         </div>
@@ -150,13 +160,12 @@
         const keys = ['C', '÷', '×', '⌫', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '%', '0', '.', '='];
         let expr = "0", audioCtx = null;
 
-        function playMechanicalSound() {
+        function playSound() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const type = document.getElementById('audioSelect').value;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             
-            // Re-implementing the 4 switch types
             if (type === 'blue') {
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(800, audioCtx.currentTime);
@@ -169,27 +178,45 @@
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
             } else if (type === 'retro') {
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(40, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(50, audioCtx.currentTime);
             }
 
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
         }
 
         function updateSettings() {
+            const theme = document.getElementById('themeSelect').value;
             const rgbMode = document.getElementById('rgbModeSelect').value;
+            applyTheme(theme);
+            applyRGBMode(rgbMode);
+        }
+
+        function applyTheme(t) {
+            const themes = {
+                black: { bg: '#050505', key: '#1a1a2e', acc: '#ff1f1f', txt: '#fff' },
+                indigo: { bg: '#020617', key: '#1e1b4b', acc: '#818cf8', txt: '#e0e7ff' },
+                white: { bg: '#f9fafb', key: '#ffffff', acc: '#1f2937', txt: '#111' },
+                pink: { bg: '#fdf2f8', key: '#fce7f3', acc: '#be185d', txt: '#831843' }
+            };
+            const s = themes[t] || themes.black;
+            document.documentElement.style.setProperty('--bg', s.bg);
+            document.documentElement.style.setProperty('--key', s.key);
+            document.documentElement.style.setProperty('--acc', s.acc);
+            document.documentElement.style.setProperty('--txt', s.txt);
+        }
+
+        function applyRGBMode(m) {
             const root = document.documentElement;
             const grads = {
-                classic: 'linear-gradient(45deg, #ff0000, #222, #ff0000, #9f1239)',
-                neon: 'linear-gradient(45deg, #00f2ff, #000, #00f2ff, #0ea5e9)',
-                rainbow: 'linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)'
+                classic: 'linear-gradient(45deg, #ff0000, #333, #ff0000, #111)',
+                neon: 'linear-gradient(45deg, #00f2ff, #000, #00f2ff, #111)',
+                rainbow: 'linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff)',
+                gold: 'linear-gradient(45deg, #ffd700, #222, #ffd700, #111)'
             };
-            root.style.setProperty('--rgb-grad', grads[rgbMode]);
+            root.style.setProperty('--rgb-grad', grads[m] || grads.classic);
         }
 
         function renderKeys() {
@@ -202,7 +229,7 @@
                 btn.innerHTML = carIcons[k] ? `<img src="${carIcons[k]}" class="car-icon"><span>${k}</span>` : `<span>${k}</span>`;
                 
                 btn.onclick = () => {
-                    playMechanicalSound();
+                    playSound();
                     if (k === 'C') expr = "0";
                     else if (k === '⌫') expr = expr.length > 1 ? expr.slice(0, -1) : "0";
                     else if (k === '=') { 
@@ -220,12 +247,14 @@
             });
         }
 
-        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
-        
-        window.onload = () => {
+        function load() {
+            applyTheme('black');
+            applyRGBMode('classic');
             renderKeys();
-            updateSettings();
-        };
+        }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
+        window.onload = load;
     </script>
 </body>
 </html>
