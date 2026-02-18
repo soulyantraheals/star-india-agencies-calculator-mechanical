@@ -5,6 +5,13 @@
     <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e11d48"> 
 
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("Service Worker Registered"));
+  }
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Star India Agencies | Mahindra Dealer Pro</title>
