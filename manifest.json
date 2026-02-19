@@ -8,7 +8,7 @@
   "theme_color": "#e11d48",
   "icons": [
     {
-      "src": "icons/cardulatorlogoinstall.png", 
+      "src": "icons/cardulatorlogoinstally.png", 
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
